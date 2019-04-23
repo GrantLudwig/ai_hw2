@@ -4,48 +4,55 @@ import sys
 def buildBoard(size):
     board = []
     for i in range(0,size):
-        board.append([False, False, False, False])
+        list = []
+        for j in range(0,size):
+            list.append(0)
+        board.append(list)
     return board
 
 def printBoard(board):
     for row in board:
-        rowStr = '|'
-        underStr = '_'
+        rowStr = ''
         for spot in row:
-            rowStr += str(spot) + '|'
-            underStr += '______'
+            rowStr += str(spot) + ' '
         print(rowStr)
-        print(underStr)
 
-def colCheck(board):
-    attack = False
-    position = []
-    for row in board:
-        for colNum in range(len(row)):
-            if row[colNum]:
-                if colNum in position:
-                    attack = True
-                position.append(colNum)
-    return attack
+def goodBoard(board, row, col, numQueens):
+    #Checks rows
+    for i in range(col):
+        if board[row][i] == 1:
+            return False
+    #Checks lower diagonal on left side 
+    for i,j in zip(range(row, numQueens, 1),range(col, -1, -1)):
+        if board[i][j] == 1:
+            return False
+    #Checks upper diagonal on left side
+    for i,j in zip(range(row, -1, -1), range(col, -1, -1)):
+        if board[i][j] == 1:
+            return False
+    return True
 
-def diagcheck(board):
-    attack = False
-    return attack
+def backSearch(board, col, numQueens):
+    if col >= numQueens:
+        return True
+    for i in range(numQueens):
+        if goodBoard(board, i, col, numQueens):
+            board[i][col] = 1
+            if backSearch(board, col+1, numQueens):
+                return True
+            else:
+                board[i][col] = 0
+    return False
 
-def goodBoard(board):
-    attack = colCheck(board)
-    if not attack:
-        attack = diagcheck(board)
-    
-    return attack
 
 #driver code
 boardQueenAmount = sys.argv[1]
 board = buildBoard(int(boardQueenAmount))
-print(board, '\n')
+print('Starting board')
 printBoard(board)
 print('\n')
-board = [[True, False, False, False], [False, False, False, False], [False, False, False, False], [False, False, False, True]]
-printBoard(board)
-print('\n')
-print(goodBoard(board))
+if backSearch(board, 0, int(boardQueenAmount)):
+    print('Solution board')
+    printBoard(board)
+else:
+    print('Solution does not exist')
