@@ -27,8 +27,8 @@ def printBoard(board):
 
 def goodBoard(board, row, col, numQueens):
     #Checks rows
-    for i in range(col):
-        if board[row][i]:
+    for c in range(col):
+        if board[row][c]:
             return False
     #Checks lower diagonal to left
     #zip combines the 2 ranges, needed to increment at the same rate
@@ -47,13 +47,13 @@ def goodBoard(board, row, col, numQueens):
 def backSearch(board, col, numQueens):
     if col >= numQueens:
         return True
-    for i in range(numQueens):
-        if goodBoard(board, i, col, numQueens):
-            board[i][col] = True
+    for row in range(numQueens):
+        if goodBoard(board, row, col, numQueens):
+            board[row][col] = True
             if backSearch(board, col+1, numQueens):
                 return True
             else:
-                board[i][col] = False
+                board[row][col] = False
     return False
 
 #driver code
